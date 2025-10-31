@@ -1,11 +1,14 @@
-// Load environment variables early
+// Load environment variables from .env file before anything else
 require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const { auth } = require('./middlewares/auth');
+
+// Import application routes
 const userRoutes = require('./routes/user.route');
 const accountRoutes = require('./routes/account.route');
 const walletRoutes = require('./routes/wallet.route');
@@ -14,59 +17,60 @@ const { start } = require('./jobs/webhookJob');
 
 const app = express();
 
-// ----------------------
-// 🔒 SECURITY MIDDLEWARES
-// ----------------------
+/**
+ * ---------------------------------------------------------------------------
+ * Security and Middleware Configuration
+ * ---------------------------------------------------------------------------
+ */
 
-// Helmet helps secure HTTP headers
+// Helmet secures HTTP headers to help protect against common vulnerabilities
 app.use(helmet());
 
-// Morgan logs all requests (dev mode = concise colorful output)
+// Morgan logs all HTTP requests for debugging and monitoring
 app.use(morgan('dev'));
 
-// Express JSON parser
+// Built-in middleware for parsing JSON request bodies
 app.use(express.json());
 
-// Rate limiter — limits repeated requests to APIs
+// Apply rate limiting to mitigate brute-force or denial-of-service attacks
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 5 requests per window
+  windowMs: 15 * 60 * 1000, // Defines a 15-minute time window
+  max: 100, // Limits each IP to 100 requests per window
   message: {
     status: 429,
     message: 'Too many requests, please try again later.',
   },
-  standardHeaders: true, // Return rate limit info in headers
-  legacyHeaders: false, // Disable deprecated headers
+  standardHeaders: true, // Sends rate limit information in headers
+  legacyHeaders: false,  // Disables deprecated headers
 });
 
 // Apply the rate limiter to all API routes
 app.use('/api', apiLimiter);
 
-// ----------------------
-// 🧩 DATABASE CONNECTION
-// ----------------------
+// Connect to MongoDB for logging and transaction records
+
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('✅ MongoDB connected successfully'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+.then(() => console.log('MongoDB connected successfully'))
+.catch(err => console.error('MongoDB connection error:'));
 
-//routes
+// Route configuration
+
 app.use('/api/users', userRoutes);
 app.use('/api/accounts', auth, accountRoutes);
 app.use('/api/wallets', auth, walletRoutes);
 app.use('/api/transactions', auth, transactionRoutes);
 
-// ----------------------
-// 🕒 CRON JOB
-// ----------------------
+
+
+// Start scheduled background jobs such as webhook processing
 start();
 
-// ----------------------
-// ⚡ SERVER START
-// ----------------------
+//Server setup
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running securely on port ${PORT}`);
+  console.log(`Server running securely on port ${PORT}`);
 });
