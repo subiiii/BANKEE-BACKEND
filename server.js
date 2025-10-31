@@ -30,7 +30,7 @@ app.use(express.json());
 // Rate limiter — limits repeated requests to APIs
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 5 requests per window
+  max: 100, // Limit each IP to 5 requests per window
   message: {
     status: 429,
     message: 'Too many requests, please try again later.',
