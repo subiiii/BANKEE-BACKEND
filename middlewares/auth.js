@@ -15,4 +15,30 @@ const auth = (req, res, next) => {
         return res.status(401).json({ message: 'Invalid token' });
     }
 }
-module.exports = { sign, auth };
+
+// Middleware to verify admin users
+const verifyAdmin = async (req, res, next) => {
+  try {
+    const header = req.headers.authorization;
+
+    if (!header || !header.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+
+    const token = header.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    //Read role from decoded.user
+    if (!decoded.user || decoded.user.role !== 'ROLE_ADMIN') {
+      return res.status(403).json({ message: 'Access forbidden. Admin only.' });
+    }
+
+    req.admin = decoded.user;
+    next();
+  } catch (error) {
+    console.error('Admin verification error');
+    res.status(401).json({ message: 'Invalid or expired token' });
+  }
+};
+
+module.exports = { sign, auth, verifyAdmin };

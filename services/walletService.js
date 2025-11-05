@@ -35,7 +35,7 @@ const fund = async (req, res) => {
     // Create a pending transaction record in MongoDB for tracking
     await Transaction.create({
       userId,
-      type: "wallet_fund",
+      type: "WALLET_FUND",
       amount,
       status: "pending",
       toWalletId: id,

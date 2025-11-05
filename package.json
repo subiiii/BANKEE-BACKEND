@@ -1,7 +1,7 @@
 {
   "name": "bankee_backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "https://documenter.getpostman.com/view/48786121/2sB3WpQ1ET\r https://github.com/subiiii/BANKEE-BACKEND.git",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
@@ -12,9 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "dotgitignore": "^2.1.0",
     "express": "^5.1.0",
     "express-rate-limit": "^8.2.0",
     "helmet": "^8.1.0",
@@ -26,5 +28,14 @@
     "mysql2": "^3.15.3",
     "node-cron": "^4.2.1",
     "xss-clean": "^0.1.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/subiiii/BANKEE-BACKEND.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/subiiii/BANKEE-BACKEND/issues"
+  },
+  "homepage": "https://github.com/subiiii/BANKEE-BACKEND#readme"
 }

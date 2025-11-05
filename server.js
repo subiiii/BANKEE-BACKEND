@@ -14,6 +14,7 @@ const accountRoutes = require('./routes/account.route');
 const walletRoutes = require('./routes/wallet.route');
 const transactionRoutes = require('./routes/transaction.route');
 const { start } = require('./jobs/webhookJob');
+const adminRoutes = require('./routes/admin.route');
 
 const app = express();
 
@@ -62,6 +63,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/accounts', auth, accountRoutes);
 app.use('/api/wallets', auth, walletRoutes);
 app.use('/api/transactions', auth, transactionRoutes);
+app.use('/api/admin', adminRoutes);
+
 
 
 
