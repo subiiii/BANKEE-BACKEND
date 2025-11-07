@@ -18,11 +18,7 @@ const adminRoutes = require('./routes/admin.route');
 
 const app = express();
 
-/**
- * ---------------------------------------------------------------------------
- * Security and Middleware Configuration
- * ---------------------------------------------------------------------------
- */
+// Security and Middleware Configuration
 
 // Helmet secures HTTP headers to help protect against common vulnerabilities
 app.use(helmet());
@@ -50,10 +46,7 @@ app.use('/api', apiLimiter);
 
 // Connect to MongoDB for logging and transaction records
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('MongoDB connected successfully'))
 .catch(err => console.error('MongoDB connection error:'));
 
